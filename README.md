@@ -1,53 +1,59 @@
-# ejercicio_opersearch
+# 🧭 Guía práctica: Exploración de datos con OpenSearch
 
-# 🧪 Ejercicio Práctico — OpenSearch con instalación local y faceted search
-
-## 📍 Contexto
-Este proyecto tiene como objetivo implementar un entorno completo de **OpenSearch** en local utilizando **Docker Compose**, realizar la **ingesta de un dataset de ejemplo**, y construir un **dashboard interactivo** con capacidades de **búsqueda facetada**.
-
-OpenSearch es una plataforma **open source** para búsqueda y analítica de datos, derivada de Elasticsearch, que permite crear visualizaciones, análisis y dashboards sobre datos indexados.
+Bienvenido 👋  
+Este proyecto es una **demostración paso a paso** de cómo usar **OpenSearch** en tu computador para explorar datos y crear dashboards interactivos.  
+No necesitas experiencia previa en programación o desarrollo, solo seguir las instrucciones.
 
 ---
 
-## 🎯 Objetivos del ejercicio
-1. Instalar y ejecutar OpenSearch y OpenSearch Dashboards en un entorno local mediante Docker Compose.  
-2. Cargar un dataset de ejemplo (en este caso, `usuarios`) en un índice de OpenSearch.  
-3. Crear un dashboard interactivo con visualizaciones básicas.  
-4. Implementar búsqueda facetada (filtros dinámicos) para explorar los datos.
+## 🧰 Qué es OpenSearch
+**OpenSearch** es una herramienta open source (gratuita) que permite buscar, visualizar y analizar información.  
+Se usa en empresas para crear buscadores, reportes y paneles de datos (dashboards) en tiempo real.
+
+En esta guía aprenderás a:
+1. Encender OpenSearch en tu computador (sin instalar nada complicado).  
+2. Cargar un pequeño conjunto de datos.  
+3. Crear visualizaciones (gráficas y métricas).  
+4. Armar un dashboard interactivo con filtros.
 
 ---
 
-## 🔧 Requisitos técnicos
-- **Docker** y **Docker Compose** instalados  
-- **Git** para clonar o subir el proyecto  
-- Acceso al puerto `9200` (OpenSearch) y `5601` (OpenSearch Dashboards)
+## 🚀 Empezar en 3 pasos
 
----
+### 🪄 Paso 1: Encender OpenSearch
 
-## ⚙️ Instalación y ejecución
+1. Abre tu **terminal** dentro de la carpeta del proyecto:
+   ```bash
+   cd opensearch_mision
+Enciende el entorno con:
 
-### 1️⃣ Clonar el repositorio
-```bash
-git clone https://github.com/AnglPinzon/opensearch_mision.git
-cd opensearch_mision
-
-Levantar los contenedores
+bash
+Copiar código
 docker-compose up -d
+Espera unos segundos hasta que ambos servicios estén "healthy":
 
+bash
+Copiar código
+docker ps
+✅ Cuando todo esté listo:
 
-📍 Esto iniciará dos servicios:
+OpenSearch corre en: https://localhost:9200
 
-opensearch (motor de búsqueda)
+OpenSearch Dashboards (interfaz visual) corre en:
+👉 http://localhost:5601
 
-opensearch-dashboards (interfaz visual)
+🧾 Paso 2: Cargar los datos
+Entra al panel de OpenSearch Dashboards:
 
-Asegúrate de que ambos estén en estado healthy (docker ps).
+arduino
+Copiar código
+http://localhost:5601
+En el menú lateral selecciona Dev Tools.
 
-🗂️ Dataset de ejemplo
-Creación del índice usuarios
+Copia y pega el siguiente bloque (luego presiona el botón ▶ para ejecutarlo):
 
-Desde Dev Tools en OpenSearch Dashboards:
-
+json
+Copiar código
 PUT usuarios
 {
   "settings": { "number_of_shards": 1, "number_of_replicas": 0 },
@@ -61,7 +67,6 @@ PUT usuarios
   }
 }
 
-Inserción de datos
 POST _bulk
 { "index": { "_index": "usuarios", "_id": "1" } }
 { "id":"1","nombre":"Laura","edad":28,"ciudad":"Bogotá" }
@@ -70,79 +75,77 @@ POST _bulk
 { "index": { "_index": "usuarios", "_id": "3" } }
 { "id":"3","nombre":"Ana","edad":22,"ciudad":"Cali" }
 
-📊 Creación de visualizaciones
+POST usuarios/_refresh
+GET usuarios/_count
+Si todo sale bien, verás algo como:
 
-Desde OpenSearch Dashboards → Dashboards → Create visualization:
+json
+Copiar código
+{
+  "count": 3,
+  "_shards": { "total": 1, "successful": 1 }
+}
+📊 Paso 3: Crear tus visualizaciones
+En el menú lateral, entra a Dashboards → Create visualization.
 
-1️⃣ Usuarios por ciudad (barras)
+Escoge el tipo de gráfico que quieras:
 
-Y-axis: Count
+Bar chart → para ver usuarios por ciudad
 
-X-axis: Terms → Field: ciudad
+Pie chart → para ver la distribución por edad
 
-2️⃣ Distribución de edades (circular)
+Metric → para mostrar el número total de usuarios
 
-Metric: Count
+Cada vez que crees una visualización, guarda con un nombre, por ejemplo:
 
-Split slices: Terms → Field: edad
+Usuarios por ciudad
 
-3️⃣ Total de usuarios (métrica)
+Distribución de edades
 
-Metric: Count
+Total de usuarios
 
-Guarda las tres visualizaciones.
+🧩 Paso 4: Construir tu dashboard
+Entra a Dashboards → Create dashboard
 
-🧩 Dashboard
+Haz clic en Add visualization
 
-Entra a Dashboards → Create Dashboard
+Agrega las tres visualizaciones anteriores.
 
-Agrega las tres visualizaciones
+Organízalas como quieras y guarda el dashboard con el nombre:
 
-Organízalas visualmente
-
-Guarda el dashboard con el nombre:
-
+nginx
+Copiar código
 Dashboard de Usuarios
+Listo ✅
+Ya puedes interactuar con los datos, ver cuántos usuarios hay por ciudad o edad, y filtrar de forma dinámica.
 
-🔍 Faceted Search
+🔍 Añadir filtros (búsqueda facetada)
+Dentro de tu dashboard, haz clic en Add control.
 
-Para añadir búsqueda facetada (filtros dinámicos):
+Elige Options list.
 
-En el dashboard, haz clic en Add control
+En Field, selecciona ciudad o edad.
 
-Elige Options list
+Activa la opción Allow multiple selections.
 
-Configura campos como:
+Guarda el dashboard otra vez.
 
-ciudad
+Ahora podrás filtrar tus gráficos por ciudad o edad sin escribir consultas.
 
-edad
+🧠 Qué aprendiste
+✔ Cómo encender OpenSearch localmente con Docker
+✔ Cómo cargar datos y crear un índice
+✔ Cómo visualizar información con gráficas
+✔ Cómo crear un dashboard con filtros facetados
 
-Activa la opción de multiselect para permitir combinaciones.
+🧹 Para apagar el entorno
+Cuando termines:
 
-🧠 Resultados esperados
-
-✅ Entorno de OpenSearch funcionando en local.
-✅ Dataset usuarios cargado exitosamente.
-✅ Dashboard funcional con visualizaciones.
-✅ Filtros facetados activos para navegación dinámica.
-
-📘 Comandos útiles
-Apagar los servicios
+bash
+Copiar código
 docker-compose down
+Y si quieres volver a iniciarlo:
 
-Ver estado
-docker ps
-
-Ver logs
-docker-compose logs -f opensearch
-docker-compose logs -f opensearch-dashboards
-
-🧩 Estructura del proyecto
-opensearch_mision/
-├── docker-compose.yml
-├── .env
-├── README.md
-├── sense.json
-└── dataset/
-    └── usuarios.json
+bash
+Copiar código
+docker-compose up -d
